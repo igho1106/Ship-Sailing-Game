@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Game</title>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="StyleSheet.css" />
+</head>
+<body>
+    <p style="color:red">
+
+
+        MISSION: Safe land the ship on the dock!
+
+    </p>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script src="Sprites/ship.js"></script>
+    <script src="Classes/keycode.js"></script>
+    <script src="Classes/acceleration.js"></script>
+    <script src="Classes/vector.js"></script>
+    <script src="Sprites/shipdock.js"></script>
+    <script src="Sprites/Mbarrier.js"></script>
+    <script src="Sprites/lbarrier.js"></script>
+    <script src="Sprites/rbarrier.js"></script>
+    <script src="Classes/collision.js"></script>
+    <script src="Classes/mooring.js"></script>
+        
+    <script>
+                
+            //this function will always be executed whenever the page loads
+            window.onload = function () {
+            var canvas = document.getElementById('canvas'),
+            //access the 2D drawing API
+            context = canvas.getContext('2d')
+
+           
+            //create a new instance of the ship class
+            ship = new Ship();
+            //create a new instance of the acceleration class
+            acceleration = new Accelerate(.01);
+            //create a new instance of the vector class
+            vector = new Vector(15, 0);
+            //create a new instance of the shipdock class           
+            dock = new shipDock();
+            //create a new instance of the moving barrier class           
+            mbarrier = new Mbarrier();
+            //create a new instance of the leftpad barrier class           
+            lbarrier = new leftBarrier();
+            //create a new instance of the right barrier class           
+            rbarrier = new rightBarrier();
+            //create a new instance of the collision class                    
+            collision = new Collision();
+            //create a new instance of the mooring class           
+            mooring = new Mooring();
+            //set the vector of the ship
+            ship.setVector(vector);
+            //assigning the variable a position in the color array.
+            colorIndex = 0;
+
+            //function to handle keyboard events on page
+            function KeyboardEventHandler(event) {
+            //if the up arrow is pressed
+            if (event.keyCode == keycode.UP) {
+                acceleration.VThrust(.01);
+            }
+            //if the left arrow is pressed
+            if (event.keyCode == keycode.LEFT) {
+                acceleration.HThrust(.01);
+            }
+            //if the right arrow is pressed
+            if (event.keyCode == keycode.RIGHT) {
+
+                acceleration.HThrust(-.01);
+            }
+            //if the down arrow is pressed
+            if (event.keyCode == keycode.DOWN) {
+                acceleration.Halt();
+            }
+            //if the letter 'Z' is pressed    
+            if (event.keyCode == keycode.Z) {
+                //move the dock 3 pixels to the left
+                dock.X -= 4;
+            }
+            //if the letter 'X' is pressed 
+            if (event.keyCode == keycode.X) {
+                //move the dock 3 pixels to the right
+                dock.X += 4;
+            }
+        }
+            //adding a listener for the keydown event 
+            window.addEventListener('keydown', KeyboardEventHandler, true);
+
+            //calling a timer function 
+            window.myVar = setInterval(myTimer, 90);
+
+            
+            //defining the function responsible for the flashing colors of the ship/shipdock
+            function myTimer()
+            {
+                //creating an array of colours 
+                ccodes = ["#BF00FF", "#64FE2E", "#d3e3d3", "#610B21", "#FFFF00"]
+                context.fillStyle = ccodes[colorIndex];
+                if (colorIndex > 3) {
+                    colorIndex = 0;
+                }
+                else
+                {
+                    //move to the next index of the color codes
+                    colorIndex++;
+                }
+                  
+            }
+
+        
+            (function drawFrame() {
+
+                //draw the sprites
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                ship.draw(context);
+                dock.draw(context);
+                mbarrier.draw(context);
+                lbarrier.draw(context);
+                rbarrier.draw(context);
+                ship.move();
+                mbarrier.move();
+                ship.accelerate(acceleration);
+                window.requestAnimationFrame(drawFrame);
+
+
+                if (collision.Overlapping(ship, lbarrier, rbarrier , mbarrier)) {
+                    //crash the ship 
+                    ship.crash();
+                    //disable the buttons
+                    ship.stop();                                                                                             
+                }
+
+                if (mooring.Moor(ship, dock)) {
+                    //disable the buttons
+                    ship.stop();
+
+                    //moor the ship
+                    ship.moor();                                   
+                }                
+            })()
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
+ 
