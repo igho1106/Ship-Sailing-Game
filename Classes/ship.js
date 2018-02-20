@@ -10,7 +10,7 @@ function Ship() {
         vy = 0;
     //Red window drawn on ship
     RedWindow = 1;
-    //bools for possible outcomes of the game
+    //booleans for possible outcomes of the game
     var Boom,
      Win;
     var Gameover = false;//NEW
@@ -23,6 +23,7 @@ function Ship() {
         //start the line (path)
         context.beginPath();
         //context.fillStyle = "#d3d3d3";
+        //draw the ship
         context.moveTo(40, 0);
         context.lineTo(40, -10);
         context.lineTo(30, -20);
@@ -40,6 +41,7 @@ function Ship() {
         //go ahead and draw the line
         context.stroke();
 
+        //add the DrawWindows method to draw it along with the ship
         DrawWindows(context)
         //windows
 

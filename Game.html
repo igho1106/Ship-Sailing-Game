@@ -98,7 +98,9 @@
             {
                 //creating an array of colours 
                 ccodes = ["#BF00FF", "#64FE2E", "#d3e3d3", "#610B21", "#FFFF00"]
+                //assign the fillstyle to the array of colors
                 context.fillStyle = ccodes[colorIndex];
+                //whenever theres only one color left ---"array begins from zero"
                 if (colorIndex > 3) {
                     colorIndex = 0;
                 }
